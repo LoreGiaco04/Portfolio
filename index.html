@@ -1,436 +1,291 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lorenzo Giacopuzzi - Portfolio</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-</head>
-<body>
-    <!-- Navigazione -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <button onclick="showSection('chi-sono')" class="brand-btn">Lorenzo Giacopuzzi</button>
-            </div>
-            <div class="nav-menu">
-                <button onclick="showSection('chi-sono')" class="nav-link active" data-section="chi-sono">Chi Sono</button>
-                <button onclick="showSection('cv')" class="nav-link" data-section="cv">Il Mio CV</button>
-                <button onclick="showSection('competenze')" class="nav-link" data-section="competenze">Competenze</button>
-                <button onclick="showSection('esperienza')" class="nav-link" data-section="esperienza">Esperienza</button>
-                <button onclick="showSection('formazione')" class="nav-link" data-section="formazione">Formazione</button>
-                <button onclick="showSection('contatti')" class="nav-link" data-section="contatti">Contatti</button>
-            </div>
+// Gestione navigazione
+function showSection(sectionId) {
+  // Nascondi tutte le sezioni
+  const sections = document.querySelectorAll(".section")
+  sections.forEach((section) => {
+    section.classList.remove("active")
+  })
+
+  // Mostra la sezione selezionata
+  const targetSection = document.getElementById(sectionId)
+  if (targetSection) {
+    targetSection.classList.add("active")
+  }
+
+  // Aggiorna la navigazione
+  const navLinks = document.querySelectorAll(".nav-link")
+  navLinks.forEach((link) => {
+    link.classList.remove("active")
+  })
+
+  const activeLink = document.querySelector(`[data-section="${sectionId}"]`)
+  if (activeLink) {
+    activeLink.classList.add("active")
+  }
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: "smooth" })
+}
+
+// Gestione CV Modal
+function enlargeCV() {
+  const modal = document.getElementById("cv-modal")
+  modal.classList.add("active")
+  document.body.style.overflow = "hidden"
+}
+
+function closeCV() {
+  const modal = document.getElementById("cv-modal")
+  modal.classList.remove("active")
+  document.body.style.overflow = "auto"
+}
+
+// Chiudi modal cliccando sullo sfondo
+document.getElementById("cv-modal").addEventListener("click", function (e) {
+  if (e.target === this) {
+    closeCV()
+  }
+})
+
+// Chiudi modal con ESC
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closeCV()
+  }
+})
+
+// Download CV
+function downloadCV() {
+  // Crea un link temporaneo per il download
+  const link = document.createElement("a")
+  link.href = "/cv-lorenzo-giacopuzzi.pdf" // Path al file PDF
+  link.download = "CV-Lorenzo-Giacopuzzi.pdf"
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+
+  // Mostra messaggio di conferma
+  showNotification("Download del CV avviato!", "success")
+}
+
+// Gestione form contatti
+function sendMessage(event) {
+  event.preventDefault()
+
+  // Ottieni i dati del form
+  const formData = new FormData(event.target)
+  const nome = formData.get("nome")
+  const email = formData.get("email")
+  const oggetto = formData.get("oggetto")
+  const messaggio = formData.get("messaggio")
+
+  // Validazione base
+  if (!nome || !email || !oggetto || !messaggio) {
+    showNotification("Per favore compila tutti i campi", "error")
+    return
+  }
+
+  // Simulazione invio (qui potresti integrare con un servizio email)
+  showNotification("Messaggio inviato con successo! Ti risponderò presto.", "success")
+
+  // Reset form
+  event.target.reset()
+
+  // In un'implementazione reale, qui invieresti i dati a un server
+  console.log("Messaggio da inviare:", {
+    nome,
+    email,
+    oggetto,
+    messaggio,
+  })
+}
+
+// Sistema di notifiche
+function showNotification(message, type = "info") {
+  // Rimuovi notifiche esistenti
+  const existingNotifications = document.querySelectorAll(".notification")
+  existingNotifications.forEach((notification) => {
+    notification.remove()
+  })
+
+  // Crea nuova notifica
+  const notification = document.createElement("div")
+  notification.className = `notification notification-${type}`
+  notification.innerHTML = `
+        <div class="notification-content">
+            <span class="notification-message">${message}</span>
+            <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
         </div>
-    </nav>
+    `
 
-    <!-- Sezione Chi Sono -->
-    <section id="chi-sono" class="section active">
-        <div class="container">
-            <div class="hero-grid">
-                <div class="hero-content">
-                    <h1 class="hero-title">Ciao, sono Lorenzo Giacopuzzi</h1>
-                    <p class="hero-subtitle">Studente di Informatica & Sviluppatore Web Front-End</p>
-                    <p class="hero-description">
-                        Ho completato la certificazione come Web Developer Full Stack presso l'ITS Academy Last. 
-                        Sono appassionato di sviluppo web e mi piace creare applicazioni belle e responsive utilizzando 
-                        tecnologie moderne come React, Bootstrap e JavaScript. Vivo a Bussolengo, in provincia di Verona.
-                    </p>
-                    <div class="hero-info">
-                        <div class="info-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Bussolengo, Verona</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Nato il 15 Luglio 2004</span>
-                        </div>
-                    </div>
-                    <div class="hero-buttons">
-                        <button onclick="showSection('contatti')" class="btn btn-primary">Contattami</button>
-                        <button onclick="showSection('esperienza')" class="btn btn-outline">Vedi Esperienza</button>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <img src="https://via.placeholder.com/400x400/e2e8f0/64748b?text=Lorenzo" alt="Lorenzo Giacopuzzi" class="profile-img">
-                </div>
-            </div>
-        </div>
-    </section>
+  // Aggiungi stili per le notifiche
+  if (!document.querySelector("#notification-styles")) {
+    const styles = document.createElement("style")
+    styles.id = "notification-styles"
+    styles.textContent = `
+            .notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 3000;
+                max-width: 400px;
+                padding: 1rem;
+                border-radius: 0.5rem;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+                animation: slideIn 0.3s ease-out;
+            }
+            
+            .notification-success {
+                background-color: #10b981;
+                color: white;
+            }
+            
+            .notification-error {
+                background-color: #ef4444;
+                color: white;
+            }
+            
+            .notification-info {
+                background-color: #3b82f6;
+                color: white;
+            }
+            
+            .notification-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .notification-close {
+                background: none;
+                border: none;
+                color: inherit;
+                font-size: 1.25rem;
+                cursor: pointer;
+                padding: 0;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                transition: background-color 0.2s;
+            }
+            
+            .notification-close:hover {
+                background-color: rgba(255, 255, 255, 0.2);
+            }
+            
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `
+    document.head.appendChild(styles)
+  }
 
-    <!-- Sezione CV -->
-    <section id="cv" class="section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Il Mio CV</h2>
-                <p class="section-description">Visualizza e scarica il mio curriculum vitae completo</p>
-            </div>
-            <div class="cv-container">
-                <div class="cv-image-container">
-                    <img src="cv-lorenzo-giacopuzzi.jpg" 
-                         alt="CV Lorenzo Giacopuzzi" 
-                         class="cv-image" 
-                         onclick="enlargeCV()">
-                </div>
-                <div class="cv-buttons">
-                    <button onclick="enlargeCV()" class="btn btn-outline">
-                        <i class="fas fa-search-plus"></i>
-                        Ingrandisci
-                    </button>
-                    <button onclick="downloadCV()" class="btn btn-primary">
-                        <i class="fas fa-download"></i>
-                        Scarica PDF
-                    </button>
-                </div>
-                <p class="cv-help-text">
-                    Clicca su "Ingrandisci" o sull'immagine per visualizzare il CV ingrandito, 
-                    oppure su "Scarica PDF" per salvarlo sul tuo dispositivo
-                </p>
-            </div>
-        </div>
-    </section>
+  // Aggiungi al DOM
+  document.body.appendChild(notification)
 
-    <!-- Modal CV Ingrandito -->
-    <div id="cv-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>CV Lorenzo Giacopuzzi</h3>
-                <button onclick="closeCV()" class="close-btn">✕ Chiudi</button>
-            </div>
-            <div class="modal-body">
-                <img src="cv-lorenzo-giacopuzzi.jpg" 
-                     alt="CV Lorenzo Giacopuzzi - Ingrandito" 
-                     class="cv-image-enlarged">
-            </div>
-            <div class="modal-footer">
-                <button onclick="downloadCV()" class="btn btn-primary">
-                    <i class="fas fa-download"></i>
-                    Scarica PDF
-                </button>
-            </div>
-        </div>
-    </div>
+  // Rimuovi automaticamente dopo 5 secondi
+  setTimeout(() => {
+    if (notification.parentElement) {
+      notification.remove()
+    }
+  }, 5000)
+}
 
-    <!-- Sezione Competenze -->
-    <section id="competenze" class="section bg-muted">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Competenze Tecniche</h2>
-                <p class="section-description">Le mie competenze tecniche e certificazioni</p>
-            </div>
-            <div class="skills-grid">
-                <div class="skill-card">
-                    <div class="skill-header">
-                        <span class="skill-icon">💻</span>
-                        <h3>Sviluppo Web</h3>
-                    </div>
-                    <div class="skill-badges">
-                        <span class="badge badge-primary">HTML</span>
-                        <span class="badge badge-primary">CSS</span>
-                        <span class="badge badge-primary">JavaScript</span>
-                        <span class="badge badge-secondary">React</span>
-                        <span class="badge badge-secondary">Bootstrap</span>
-                    </div>
-                    <p class="skill-description">
-                        Elevata esperienza con HTML, CSS e JavaScript. Buona conoscenza di React e Bootstrap
-                    </p>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-header">
-                        <span class="skill-icon">🎨</span>
-                        <h3>Design & CMS</h3>
-                    </div>
-                    <div class="skill-badges">
-                        <span class="badge badge-secondary">Figma</span>
-                        <span class="badge badge-secondary">UI/UX Design</span>
-                        <span class="badge badge-secondary">Elementor</span>
-                        <span class="badge badge-secondary">WordPress</span>
-                    </div>
-                    <p class="skill-description">
-                        Conoscenze di Figma ed esperienza UI/UX. Buone conoscenze di Elementor per WordPress
-                    </p>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-header">
-                        <span class="skill-icon">📊</span>
-                        <h3>Office & Digitale</h3>
-                    </div>
-                    <div class="skill-badges">
-                        <span class="badge badge-outline">Certificazione ICDL</span>
-                        <span class="badge badge-outline">Office 365</span>
-                        <span class="badge badge-outline">Excel</span>
-                        <span class="badge badge-outline">PowerPoint</span>
-                        <span class="badge badge-outline">Browser Web</span>
-                        <span class="badge badge-outline">Social Media</span>
-                    </div>
-                    <p class="skill-description">
-                        Certificazione ICDL con conoscenze ottime di Office 365 (Word, Excel, PowerPoint). 
-                        Padronanza nell'utilizzo dei principali browser e social media/social network.
-                    </p>
-                </div>
-            </div>
-            <div class="languages-section">
-                <h3 class="languages-title">Competenze Linguistiche</h3>
-                <div class="languages-badges">
-                    <span class="badge badge-large">🇮🇹 Italiano - Madrelingua</span>
-                    <span class="badge badge-large">🇬🇧 Inglese - B1</span>
-                    <span class="badge badge-large">🇩🇪 Tedesco - A2</span>
-                </div>
-            </div>
-        </div>
-    </section>
+// Smooth scrolling per i link interni
+document.addEventListener("DOMContentLoaded", () => {
+  // Inizializza la prima sezione
+  showSection("chi-sono")
 
-    <!-- Sezione Esperienza -->
-    <section id="esperienza" class="section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Esperienza Lavorativa</h2>
-                <p class="section-description">Il mio percorso professionale e stage formativi</p>
-            </div>
-            <div class="experience-list">
-                <div class="experience-card featured">
-                    <div class="experience-header">
-                        <div class="experience-info">
-                            <h3 class="experience-title">
-                                <i class="fas fa-briefcase"></i>
-                                Stage Web Developer Front-End
-                            </h3>
-                            <div class="experience-meta">
-                                <span class="company">ReadyNet SRL</span>
-                                <span class="separator">•</span>
-                                <span class="date">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    Marzo 2025 - Giugno 2025
-                                </span>
-                            </div>
-                        </div>
-                        <span class="badge badge-current">In Corso</span>
-                    </div>
-                    <ul class="experience-tasks">
-                        <li>Creazione di pagine web responsive con React e Bootstrap</li>
-                        <li>Programmazione e sviluppo di pagine e-commerce</li>
-                        <li>Collaborazione con il team di sviluppo per soluzioni front-end</li>
-                    </ul>
-                </div>
+  // Aggiungi listener per i link esterni
+  const externalLinks = document.querySelectorAll('a[href^="http"]')
+  externalLinks.forEach((link) => {
+    link.setAttribute("target", "_blank")
+    link.setAttribute("rel", "noopener noreferrer")
+  })
+})
 
-                <div class="experience-card">
-                    <div class="experience-header">
-                        <div class="experience-info">
-                            <h3 class="experience-title">
-                                <i class="fas fa-briefcase"></i>
-                                Stage Web Developer Front-End
-                            </h3>
-                            <div class="experience-meta">
-                                <span class="company">Steelitalia SRL</span>
-                                <span class="separator">•</span>
-                                <span class="date">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    Maggio 2024 - Agosto 2024
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <ul class="experience-tasks">
-                        <li>Programmazione di siti web con Elementor e WordPress</li>
-                        <li>Design e implementazione di layout responsive</li>
-                        <li>Esperienza pratica nello sviluppo web professionale</li>
-                    </ul>
-                </div>
+// Gestione responsive per la navigazione mobile
+function toggleMobileMenu() {
+  const navMenu = document.querySelector(".nav-menu")
+  navMenu.classList.toggle("mobile-active")
+}
 
-                <div class="experience-card">
-                    <div class="experience-header">
-                        <div class="experience-info">
-                            <h3 class="experience-title">
-                                <i class="fas fa-briefcase"></i>
-                                Cameriere / Servizio Clienti
-                            </h3>
-                            <div class="experience-meta">
-                                <span class="company">Campeggio Bella Italia</span>
-                                <span class="separator">•</span>
-                                <span class="date">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    Luglio 2023 - Settembre 2023
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <ul class="experience-tasks">
-                        <li>Servizio ai tavoli per ospiti internazionali</li>
-                        <li>Accoglienza dei clienti e gestione dell'ospitalità</li>
-                        <li>Sviluppo di competenze comunicative e multitasking</li>
-                    </ul>
-                </div>
+// Aggiungi stili per menu mobile se necessario
+if (window.innerWidth <= 768) {
+  const mobileStyles = document.createElement("style")
+  mobileStyles.textContent = `
+        @media (max-width: 768px) {
+            .nav-menu.mobile-active {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                border-top: 1px solid #e2e8f0;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+        }
+    `
+  document.head.appendChild(mobileStyles)
+}
 
-                <div class="experience-card">
-                    <div class="experience-header">
-                        <div class="experience-info">
-                            <h3 class="experience-title">
-                                <i class="fas fa-briefcase"></i>
-                                Cameriere
-                            </h3>
-                            <div class="experience-meta">
-                                <span class="company">Coldiretti Bussolengo</span>
-                                <span class="separator">•</span>
-                                <span class="date">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    Giugno 2022
-                                </span>
-                            </div>
-                        </div>
-                        <span class="badge badge-outline">Alternanza Scuola-Lavoro</span>
-                    </div>
-                    <p class="experience-description">
-                        Partecipazione al programma di alternanza scuola-lavoro, acquisendo le prime esperienze 
-                        professionali nel settore dell'ospitalità.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
+// Gestione eventi tastiera per accessibilità
+document.addEventListener("keydown", (e) => {
+  // Navigazione con Tab
+  if (e.key === "Tab") {
+    document.body.classList.add("keyboard-navigation")
+  }
+})
 
-    <!-- Sezione Formazione -->
-    <section id="formazione" class="section bg-muted">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Istruzione e Formazione</h2>
-                <p class="section-description">Il mio percorso formativo e certificazioni</p>
-            </div>
-            <div class="education-grid">
-                <div class="education-card featured">
-                    <div class="education-header">
-                        <h3 class="education-title">
-                            <i class="fas fa-graduation-cap"></i>
-                            Web Developer Full Stack
-                        </h3>
-                        <div class="education-meta">
-                            <span class="institution">Fondazione ITS Academy Last</span>
-                            <span class="separator">•</span>
-                            <span class="period">2023 - 2025</span>
-                        </div>
-                    </div>
-                    <p class="education-description">
-                        Certificazione avanzata in Sviluppo Web Full Stack, con focus su tecnologie web moderne 
-                        e best practice del settore.
-                    </p>
-                    <span class="badge badge-secondary">Completato</span>
-                </div>
+document.addEventListener("mousedown", () => {
+  document.body.classList.remove("keyboard-navigation")
+})
 
-                <div class="education-card">
-                    <div class="education-header">
-                        <h3 class="education-title">
-                            <i class="fas fa-graduation-cap"></i>
-                            Sistemi Informativi Aziendali
-                        </h3>
-                        <div class="education-meta">
-                            <span class="institution">ITCS Lorgna Pindemonte</span>
-                            <span class="separator">•</span>
-                            <span class="period">2018 - 2023</span>
-                        </div>
-                    </div>
-                    <p class="education-description">
-                        Specializzazione in Economia, Tecnica Aziendale e Diritto con focus sui Sistemi Informativi 
-                        Aziendali. Solide basi in tecnologia e business.
-                    </p>
-                    <span class="badge badge-secondary">Completato</span>
-                </div>
-            </div>
-        </div>
-    </section>
+// Aggiungi stili per la navigazione da tastiera
+const keyboardStyles = document.createElement("style")
+keyboardStyles.textContent = `
+    .keyboard-navigation *:focus {
+        outline: 2px solid #3b82f6;
+        outline-offset: 2px;
+    }
+    
+    body:not(.keyboard-navigation) *:focus {
+        outline: none;
+    }
+`
+document.head.appendChild(keyboardStyles)
 
-    <!-- Sezione Contatti -->
-    <section id="contatti" class="section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Contattami</h2>
-                <p class="section-description">Sono sempre interessato a nuove opportunità e collaborazioni</p>
-            </div>
-            <div class="contact-grid">
-                <div class="contact-info">
-                    <div class="contact-section">
-                        <h3>Informazioni di Contatto</h3>
-                        <div class="contact-items">
-                            <div class="contact-item">
-                                <i class="fas fa-envelope"></i>
-                                <span>lorenzogiacopuzzi04@gmail.com</span>
-                            </div>
-                            <div class="contact-item">
-                                <i class="fas fa-phone"></i>
-                                <span>+39 331 215 6453</span>
-                            </div>
-                            <div class="contact-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Via Custoza 14, Bussolengo (VR)</span>
-                            </div>
-                        </div>
-                    </div>
+// Lazy loading per le immagini (se necessario)
+function lazyLoadImages() {
+  const images = document.querySelectorAll("img[data-src]")
+  const imageObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const img = entry.target
+        img.src = img.dataset.src
+        img.removeAttribute("data-src")
+        imageObserver.unobserve(img)
+      }
+    })
+  })
 
-                    <div class="contact-section">
-                        <h3>Seguimi</h3>
-                        <div class="social-buttons">
-                            <a href="#" class="social-btn" aria-label="GitHub">
-                                <i class="fab fa-github"></i>
-                            </a>
-                            <a href="#" class="social-btn" aria-label="LinkedIn">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                        </div>
-                    </div>
+  images.forEach((img) => imageObserver.observe(img))
+}
 
-                    <div class="contact-section">
-                        <h3>Scarica CV</h3>
-                        <button onclick="showSection('cv')" class="btn btn-outline">
-                            <i class="fas fa-download"></i>
-                            Visualizza CV
-                        </button>
-                    </div>
-                </div>
-
-                <div class="contact-form-container">
-                    <div class="contact-form-card">
-                        <div class="form-header">
-                            <h3>Inviami un messaggio</h3>
-                            <p>Ti risponderò il prima possibile</p>
-                        </div>
-                        <form class="contact-form" onsubmit="sendMessage(event)">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="nome">Nome</label>
-                                    <input type="text" id="nome" name="nome" placeholder="Il tuo nome" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="email" id="email" name="email" placeholder="tua@email.com" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="oggetto">Oggetto</label>
-                                <input type="text" id="oggetto" name="oggetto" placeholder="Di cosa si tratta?" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="messaggio">Messaggio</label>
-                                <textarea id="messaggio" name="messaggio" placeholder="Parlami del tuo progetto o della tua opportunità!" rows="5" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-full">Invia Messaggio</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <p class="footer-text">© 2024 Lorenzo Giacopuzzi. Tutti i diritti riservati.</p>
-                <p class="footer-privacy">
-                    Autorizzo il trattamento dei dati personali ai sensi del GDPR 679/16 e D.Lgs. 196/2003
-                </p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html>
+// Inizializza lazy loading se supportato
+if ("IntersectionObserver" in window) {
+  document.addEventListener("DOMContentLoaded", lazyLoadImages)
+}
