@@ -438,10 +438,6 @@ body {
   border: 1px solid #e2e8f0;
 }
 
-.experience-card.featured {
-  border-left: 4px solid #3b82f6;
-}
-
 .experience-header {
   display: flex;
   justify-content: space-between;
