@@ -23,6 +23,15 @@ function showSection(sectionId) {
     activeLink.classList.add("active")
   }
 
+  // Chiudi il menu mobile se è aperto
+  const navMenu = document.querySelector(".nav-menu")
+  const hamburgerBtn = document.querySelector(".hamburger-btn")
+  if (navMenu.classList.contains("mobile-active")) {
+    navMenu.classList.remove("mobile-active")
+    hamburgerBtn.classList.remove("active")
+    document.body.style.overflow = "auto"
+  }
+
   // Scroll to top
   window.scrollTo({ top: 0, behavior: "smooth" })
 }
@@ -218,29 +227,29 @@ document.addEventListener("DOMContentLoaded", () => {
 // Gestione responsive per la navigazione mobile
 function toggleMobileMenu() {
   const navMenu = document.querySelector(".nav-menu")
+  const hamburgerBtn = document.querySelector(".hamburger-btn")
+
   navMenu.classList.toggle("mobile-active")
+  hamburgerBtn.classList.toggle("active")
+
+  // Previeni lo scroll del body quando il menu è aperto
+  if (navMenu.classList.contains("mobile-active")) {
+    document.body.style.overflow = "hidden"
+  } else {
+    document.body.style.overflow = "auto"
+  }
 }
 
-// Aggiungi stili per menu mobile se necessario
-if (window.innerWidth <= 768) {
-  const mobileStyles = document.createElement("style")
-  mobileStyles.textContent = `
-        @media (max-width: 768px) {
-            .nav-menu.mobile-active {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: white;
-                border-top: 1px solid #e2e8f0;
-                flex-direction: column;
-                padding: 1rem;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            }
-        }
-    `
-  document.head.appendChild(mobileStyles)
-}
+// Chiudi il menu mobile quando si ridimensiona la finestra
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 700) {
+    const navMenu = document.querySelector(".nav-menu")
+    const hamburgerBtn = document.querySelector(".hamburger-btn")
+    navMenu.classList.remove("mobile-active")
+    hamburgerBtn.classList.remove("active")
+    document.body.style.overflow = "auto"
+  }
+})
 
 // Gestione eventi tastiera per accessibilità
 document.addEventListener("keydown", (e) => {
